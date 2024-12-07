@@ -1,6 +1,6 @@
 ﻿using Deploy.model;
 
-namespace Deploy.service;
+namespace Deploy.service.api;
 
 public interface DeployService
 {

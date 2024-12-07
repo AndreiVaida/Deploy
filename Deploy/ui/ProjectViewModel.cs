@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Windows.Input;
 using Deploy.model;
 using Deploy.service;
+using Deploy.service.api;
 
 namespace Deploy.ui;
 
