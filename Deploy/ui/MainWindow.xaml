@@ -1,0 +1,54 @@
+﻿<Window x:Class="Deploy.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Deploy" xmlns:ui="clr-namespace:Deploy.ui"
+        d:DataContext="{d:DesignInstance Type=ui:ProjectViewModel}"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="500" Width="630" Background="#FF09364C">
+    <StackPanel Orientation="Vertical">
+        <Label Content="Deploy" HorizontalAlignment="Center"/>
+
+        <ListBox ItemsSource="{Binding Projects}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Vertical">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="60" />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+
+                            <Label Grid.Row="0" Grid.Column="0" Content="Name:"/>
+                            <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
+                                <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" MinWidth="200" HorizontalAlignment="Left"></TextBox>
+                                <Button Command="{Binding DataContext.ExecuteBuildCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
+                                        CommandParameter="{Binding}"
+                                        Content="🛠️ Build 🛠️" Width="330" Margin="3, 0"/>
+                            </StackPanel>
+
+                            <Label Grid.Row="1" Grid.Column="0" Content="Project:" Style="{StaticResource LabelSmall}"/>
+                            <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
+                                <TextBox Text="{Binding ProjectPath, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" MinWidth="510" Style="{StaticResource TextBoxSmall}"></TextBox>
+                                <Button Click="OnOpenProjectLocation" Margin="3, 0" Width="20" Height="20" Padding="-10">📂</Button>
+                            </StackPanel>
+
+                            <Label Grid.Row="2" Grid.Column="0" Content="Platform:" Style="{StaticResource LabelSmall}"/>
+                            <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal">
+                                <TextBox Text="{Binding DeployPath, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" MinWidth="510" Style="{StaticResource TextBoxSmall}"></TextBox>
+                                <Button Click="OnOpenPlatformLocation" Margin="3, 0" Width="20" Height="20" Padding="-10">📂</Button>
+                            </StackPanel>
+                        </Grid>
+                        <Separator Margin="10"/>
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        </StackPanel>
+</Window>
