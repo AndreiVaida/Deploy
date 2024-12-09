@@ -41,7 +41,7 @@
 
                             <Label Grid.Row="2" Grid.Column="0" Content="Platform:" Style="{StaticResource LabelSmall}"/>
                             <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal">
-                                <TextBox Text="{Binding DeployPath, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" MinWidth="510" Style="{StaticResource TextBoxSmall}"></TextBox>
+                                <TextBox Text="{Binding ServerPath, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" MinWidth="510" Style="{StaticResource TextBoxSmall}"></TextBox>
                                 <Button Click="OnOpenPlatformLocation" Margin="3, 0" Width="20" Height="20" Padding="-10">📂</Button>
                             </StackPanel>
                         </Grid>

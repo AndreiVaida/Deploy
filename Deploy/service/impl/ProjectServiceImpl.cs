@@ -2,6 +2,7 @@
 using System.IO;
 using System.Reactive.Linq;
 using Deploy.service.api;
+using Deploy.utils;
 
 namespace Deploy.service.impl;
 
@@ -41,8 +42,6 @@ public class ProjectServiceImpl : ProjectService
         if (!Directory.Exists(jarFolderPath)) return null;
         return Directory.GetFiles(jarFolderPath)
             .OrderByDescending(File.GetCreationTime)
-            .FirstOrDefault(IsJar);
+            .FirstOrDefault(FileUtils.IsJar);
     }
-
-    private static bool IsJar(string file) => Path.GetExtension(file).Equals(".jar");
 }
