@@ -1,9 +1,8 @@
 ﻿using System.Windows;
 using Deploy.service;
 using Deploy.service.api;
-using Deploy.ui;
 
-namespace Deploy;
+namespace Deploy.ui;
 
 /// <summary>
 /// Interaction logic for MainWindow.xaml
