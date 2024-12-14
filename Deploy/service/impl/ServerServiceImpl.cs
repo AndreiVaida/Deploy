@@ -15,6 +15,7 @@ internal class ServerServiceImpl : ServerService
     private const string ServerDateTimeFormat = "yyyy-MM-dd HH:mm:ss";
     private readonly int _serverDateTimeCharacters = ServerDateTimeFormat.Length;
     private readonly ConfigRepository _configRepository = ServiceProvider.ConfigRepository;
+    private readonly WindowService _windowService = ServiceProvider.WindowService;
 
     public IObservable<Unit> Start(string serverPath)
     {
@@ -28,14 +29,7 @@ internal class ServerServiceImpl : ServerService
         });
     }
 
-    public void Stop(string serverPath)
-    {
-        // WARNING: The stop_server.bat command stops the server slowly (17 seconds).
-        // If the jar building finishes before the server is closed, we must change the way we close the server.
-        // Solution: press `Ctrl + C` on the server's window
-        var stopFile = _configRepository.GetSystemConfig().ServerStopFileRelativeLocation;
-        ExecUtils.RunCommand(serverPath, stopFile);
-    }
+    public void Stop(string serverPath) => _windowService.KillProcess(_configRepository.GetSystemConfig().ServerStartFileRelativeLocation);
 
     public void UpdateJar(string serverPath, string jarPath)
     {
