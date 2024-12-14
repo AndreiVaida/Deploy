@@ -13,6 +13,7 @@ public class ConfigRepositoryImpl : ConfigRepository
     private const string ProjectsSection = "projects";
     private const string ApplicationNameKey = "application-name";
     private const string ApplicationLocationKey = "application-location";
+    private const string ApplicationArgumentsKey = "application-arguments";
     private const string ServerNameKey = "server-name";
     private const string ServerWindowNameKey = "server-window-name";
     private const string ServerStartFileRelativeLocationKey = "server-start-file-relative-location";
@@ -41,6 +42,7 @@ public class ConfigRepositoryImpl : ConfigRepository
         {
             ApplicationName = applicationSection[ApplicationNameKey],
             ApplicationLocation = applicationSection[ApplicationLocationKey],
+            ApplicationArguments = applicationSection[ApplicationArgumentsKey],
             ServerName = applicationSection[ServerNameKey],
             ServerWindowName = applicationSection[ServerWindowNameKey],
             ServerStartFileRelativeLocation = applicationSection[ServerStartFileRelativeLocationKey],
