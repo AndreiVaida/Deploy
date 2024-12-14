@@ -15,9 +15,7 @@ public class ProjectServiceImpl : ProjectService
     {
         return Observable.FromAsync(() =>
         {
-            var process = CreateCmdProcess(projectPath);
-            process.Start();
-            process.WaitForExit();
+            ExecUtils.RunCommand(projectPath, GradleBuildCommand);
 
             var jarFolderPath = Path.Combine(projectPath, _jarRelativePath);
             var jarName = GetJar(jarFolderPath);
@@ -26,15 +24,6 @@ public class ProjectServiceImpl : ProjectService
                 ? Task.FromException<string>(new NullReferenceException($"Jar not available in {jarFolderPath}"))
                 : Task.FromResult(Path.Combine(jarFolderPath, jarName));
         });
-    }
-
-    private static Process CreateCmdProcess(string projectPath)
-    {
-        var process = new Process();
-        process.StartInfo.FileName = "cmd.exe";
-        process.StartInfo.Arguments = $"/C cd {projectPath} && {GradleBuildCommand}";
-        process.StartInfo.UseShellExecute = false;
-        return process;
     }
 
     private static string? GetJar(string jarFolderPath)

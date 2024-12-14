@@ -1,4 +1,5 @@
-﻿using IniParser;
+﻿using System.Configuration;
+using IniParser;
 using System.IO;
 using Deploy.model;
 using IniParser.Model;
@@ -13,6 +14,8 @@ public class ConfigRepositoryImpl : ConfigRepository
     private const string ApplicationNameKey = "application-name";
     private const string ApplicationLocationKey = "application-location";
     private const string ServerNameKey = "server-name";
+    private const string ServerStartFileRelativeLocationKey = "server-start-file-relative-location";
+    private const string ServerStopFileRelativeLocationKey = "server-stop-file-relative-location";
 
     private readonly FileIniDataParser _parser = new();
     private readonly SystemConfig _systemConfig;
@@ -26,10 +29,10 @@ public class ConfigRepositoryImpl : ConfigRepository
 
     private SystemConfig ReadSystemConfig() 
     {
-        if (!File.Exists(ConfigurationFileName)) return new SystemConfig();
+        if (!File.Exists(ConfigurationFileName)) throw new ConfigurationErrorsException($"{ConfigurationFileName} not found. Please create as described on https://github.com/AndreiVaida/Deploy.");
 
         var data = _parser.ReadFile(ConfigurationFileName);
-        if (!data.Sections.ContainsSection(ApplicationSection)) return new SystemConfig();
+        if (!data.Sections.ContainsSection(ApplicationSection)) throw new ConfigurationErrorsException($"'{ApplicationSection}' not found in {ConfigurationFileName}.");
 
         var applicationSection = data.Sections[ApplicationSection];
         var projectsSection = data.Sections[ProjectsSection];
@@ -39,6 +42,8 @@ public class ConfigRepositoryImpl : ConfigRepository
             ApplicationName = applicationSection[ApplicationNameKey],
             ApplicationLocation = applicationSection[ApplicationLocationKey],
             ServerName = applicationSection[ServerNameKey],
+            ServerStartFileRelativeLocation = applicationSection[ServerStartFileRelativeLocationKey],
+            ServerStopFileRelativeLocation = applicationSection[ServerStopFileRelativeLocationKey],
             Projects = GetProjects(projectsSection)
         };
     }

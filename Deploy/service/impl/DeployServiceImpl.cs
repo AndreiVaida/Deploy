@@ -14,11 +14,10 @@ public class DeployServiceImpl : DeployService
         _projectService.Build(project.ProjectPath).Subscribe(jarPath =>
         {
             _serverService.UpdateJar(project.ServerPath, jarPath);
-            _serverService.Start(project.ProjectPath)
+            _serverService.Start(project.ServerPath)
                 .Subscribe(_ => _applicationService.Start());
         });
 
-        _applicationService.Stop();
         _serverService.Stop(project.ServerPath);
     }
 }
