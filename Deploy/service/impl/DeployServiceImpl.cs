@@ -1,4 +1,6 @@
-﻿using Deploy.model;
+﻿using System.Reactive.Concurrency;
+using System.Reactive.Linq;
+using Deploy.model;
 using Deploy.service.api;
 
 namespace Deploy.service.impl;
@@ -11,12 +13,14 @@ public class DeployServiceImpl : DeployService
 
     public void Deploy(Project project)
     {
-        _projectService.Build(project.ProjectPath).Subscribe(jarPath =>
-        {
-            _serverService.UpdateJar(project.ServerPath, jarPath);
-            _serverService.Start(project.ServerPath)
-                .Subscribe(_ => _applicationService.Start());
-        });
+        _projectService.Build(project.ProjectPath)
+            .SubscribeOn(Scheduler.Default)
+            .Subscribe(jarPath =>
+            {
+                _serverService.UpdateJar(project.ServerPath, jarPath);
+                _serverService.Start(project.ServerPath)
+                    .Subscribe(_ => _applicationService.Start());
+            });
 
         _serverService.Stop(project.ServerPath);
     }

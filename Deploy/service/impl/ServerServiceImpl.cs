@@ -10,7 +10,11 @@ namespace Deploy.service.impl;
 
 internal class ServerServiceImpl : ServerService
 {
+    private const string ServerStartLog = "Server successfully started as a primary.";
     private readonly string _jarLocationInServer = Path.Combine("lib", "extensions");
+    private readonly string _logsLocationInServer = "logs";
+    private const string ServerDateTimeFormat = "yyyy-MM-dd HH:mm:ss";
+    private readonly int ServerDateTimeCharacters = ServerDateTimeFormat.Length;
     private readonly ConfigRepository _configRepository = ServiceProvider.ConfigRepository;
 
     public IObservable<Unit> Start(string serverPath)
@@ -19,6 +23,8 @@ internal class ServerServiceImpl : ServerService
         {
             var startFile = _configRepository.GetSystemConfig().ServerStartFileRelativeLocation;
             ExecUtils.RunCommand(serverPath, startFile, false);
+
+            WaitForLog(serverPath, GetServerStartLogPredicate());
             return Task.FromResult(Unit.Default);
         });
     }
@@ -69,5 +75,38 @@ internal class ServerServiceImpl : ServerService
         var jarName = Path.GetFileName(jarPath);
         var destinationFilePath = Path.Combine(serverPath, _jarLocationInServer, jarName);
         File.Move(jarPath, destinationFilePath);
+    }
+
+    private Predicate<string> GetServerStartLogPredicate()
+    {
+        var serverStartTimeAsString = DateTime.Now.ToString(ServerDateTimeFormat);
+        return log => log.EndsWith(ServerStartLog) && GetTimeOfLog(log).IsGreaterThan(serverStartTimeAsString);
+    }
+
+    private string GetTimeOfLog(string log) => log[..ServerDateTimeCharacters];
+
+    private void WaitForLog(string serverPath, Predicate<string> condition)
+    {
+        var logFile = GetLatestLogFile(serverPath);
+
+        using var fileStream = new FileStream(logFile, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+        using var streamReader = new StreamReader(fileStream);
+        while (true)
+        {
+            while (streamReader.ReadLine() is { } line)
+                if (condition.Invoke(line))
+                    return;
+            Thread.Sleep(500);
+        }
+    }
+
+    private string GetLatestLogFile(string serverPath)
+    {
+        var logsFolder = Path.Combine(serverPath, _logsLocationInServer);
+        return Directory.GetFiles(logsFolder)
+            .OrderByDescending(File.GetCreationTime)
+            .Where(FileUtils.IsTxt)
+            .Where(FileUtils.IsDateFormat)
+            .First();
     }
 }
