@@ -4,17 +4,16 @@ using System.Reactive.Linq;
 using Deploy.repository;
 using Deploy.service.api;
 using Deploy.utils;
-using Microsoft.VisualBasic.FileIO;
 
 namespace Deploy.service.impl;
 
 internal class ServerServiceImpl : ServerService
 {
     private const string ServerStartLog = "Server successfully started as a primary.";
+    private const string LogsLocationInServer = "logs";
     private readonly string _jarLocationInServer = Path.Combine("lib", "extensions");
-    private readonly string _logsLocationInServer = "logs";
     private const string ServerDateTimeFormat = "yyyy-MM-dd HH:mm:ss";
-    private readonly int ServerDateTimeCharacters = ServerDateTimeFormat.Length;
+    private readonly int _serverDateTimeCharacters = ServerDateTimeFormat.Length;
     private readonly ConfigRepository _configRepository = ServiceProvider.ConfigRepository;
 
     public IObservable<Unit> Start(string serverPath)
@@ -41,41 +40,24 @@ internal class ServerServiceImpl : ServerService
     public void UpdateJar(string serverPath, string jarPath)
     {
         DeleteJar(serverPath, jarPath);
-        CopyJar(serverPath, jarPath);
+        var jarFolderPath = Path.Combine(serverPath, _jarLocationInServer);
+        FileUtils.CopyFile(jarFolderPath, jarPath);
     }
 
     private void DeleteJar(string serverPath, string jarPath)
     {
-        var jarName = GetJarName(jarPath);
+        var jarName = FileUtils.GetJarName(jarPath);
         var jarsFolderOnServer = Path.Combine(serverPath, _jarLocationInServer);
         var serverJarsWithSameName = GetJarsWithSameName(jarsFolderOnServer, jarName);
-        serverJarsWithSameName.ForEach(DeleteFile);
+        serverJarsWithSameName.ForEach(FileUtils.DeleteFile);
     }
-
-    private static string GetJarName(string jarPath) => string.Join('-', Path.GetFileName(jarPath).Split('-').Where(IsWord));
-
-    private static bool IsWord(string str) => str.All(char.IsLetter);
 
     private static List<string> GetJarsWithSameName(string jarsFolderOnServer, string name) =>
         Directory.GetFiles(jarsFolderOnServer)
             .OrderByDescending(File.GetCreationTime)
             .Where(FileUtils.IsJar)
-            .Where(serverJar => name.Equals(GetJarName(serverJar)))
+            .Where(serverJar => name.Equals(FileUtils.GetJarName(serverJar)))
             .ToList();
-
-
-    private static void DeleteFile(string filePath) =>
-        FileSystem.DeleteFile(filePath,
-            UIOption.OnlyErrorDialogs,
-            RecycleOption.SendToRecycleBin,
-            UICancelOption.ThrowException);
-
-    private void CopyJar(string serverPath, string jarPath)
-    {
-        var jarName = Path.GetFileName(jarPath);
-        var destinationFilePath = Path.Combine(serverPath, _jarLocationInServer, jarName);
-        File.Move(jarPath, destinationFilePath);
-    }
 
     private Predicate<string> GetServerStartLogPredicate()
     {
@@ -83,11 +65,11 @@ internal class ServerServiceImpl : ServerService
         return log => log.EndsWith(ServerStartLog) && GetTimeOfLog(log).IsGreaterThan(serverStartTimeAsString);
     }
 
-    private string GetTimeOfLog(string log) => log[..ServerDateTimeCharacters];
+    private string GetTimeOfLog(string log) => log[.._serverDateTimeCharacters];
 
-    private void WaitForLog(string serverPath, Predicate<string> condition)
+    private static void WaitForLog(string serverPath, Predicate<string> condition)
     {
-        var logFile = GetLatestLogFile(serverPath);
+        var logFile = GetLatestLogFile(Path.Combine(serverPath, LogsLocationInServer));
 
         using var fileStream = new FileStream(logFile, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
         using var streamReader = new StreamReader(fileStream);
@@ -100,13 +82,10 @@ internal class ServerServiceImpl : ServerService
         }
     }
 
-    private string GetLatestLogFile(string serverPath)
-    {
-        var logsFolder = Path.Combine(serverPath, _logsLocationInServer);
-        return Directory.GetFiles(logsFolder)
+    private static string GetLatestLogFile(string logsFolder) =>
+        Directory.GetFiles(logsFolder)
             .OrderByDescending(File.GetCreationTime)
             .Where(FileUtils.IsTxt)
             .Where(FileUtils.IsDateFormat)
             .First();
-    }
 }
