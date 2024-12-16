@@ -22,6 +22,7 @@ public class DeployServiceImpl : DeployService
                     .Subscribe(_ => _applicationService.Start());
             });
 
+        _applicationService.Stop();
         _serverService.Stop(project.ServerPath);
     }
 }

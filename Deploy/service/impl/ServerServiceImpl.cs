@@ -29,7 +29,7 @@ internal class ServerServiceImpl : ServerService
         });
     }
 
-    public void Stop(string serverPath) => _windowService.KillProcess(_configRepository.GetSystemConfig().ServerStartFileRelativeLocation);
+    public void Stop(string serverPath) => _windowService.KillCmdProcess(_configRepository.GetSystemConfig().ServerStartFileRelativeLocation);
 
     public void UpdateJar(string serverPath, string jarPath)
     {

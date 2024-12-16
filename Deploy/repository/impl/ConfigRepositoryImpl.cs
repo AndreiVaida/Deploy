@@ -11,7 +11,7 @@ public class ConfigRepositoryImpl : ConfigRepository
     private const string ConfigurationFileName = "Configuration.ini";
     private const string ApplicationSection = "application";
     private const string ProjectsSection = "projects";
-    private const string ApplicationNameKey = "application-name";
+    private const string ApplicationProcessNameKey = "application-process-name";
     private const string ApplicationLocationKey = "application-location";
     private const string ApplicationArgumentsKey = "application-arguments";
     private const string ServerNameKey = "server-name";
@@ -40,7 +40,7 @@ public class ConfigRepositoryImpl : ConfigRepository
 
         return new SystemConfig
         {
-            ApplicationName = applicationSection[ApplicationNameKey],
+            ApplicationProcessName = applicationSection[ApplicationProcessNameKey],
             ApplicationLocation = applicationSection[ApplicationLocationKey],
             ApplicationArguments = applicationSection[ApplicationArgumentsKey],
             ServerName = applicationSection[ServerNameKey],

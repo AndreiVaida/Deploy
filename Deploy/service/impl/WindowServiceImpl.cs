@@ -21,7 +21,14 @@ public class WindowServiceImpl : WindowService
     [DllImport("kernel32.dll", SetLastError = true)]
     static extern bool TerminateProcess(IntPtr hProcess, uint uExitCode);
 
-    public void KillProcess(string cmdFile)
+    public void KillProcess(string processName)
+    {
+        var process = Process.GetProcessesByName(processName).FirstOrDefault();
+        if (process != null)
+            TerminateProcess(process.Handle, 0);
+    }
+
+    public void KillCmdProcess(string cmdFile)
     {
         var processes = Process.GetProcessesByName("cmd");
         var process = processes.FirstOrDefault(process => {
@@ -29,12 +36,12 @@ public class WindowServiceImpl : WindowService
             return IsSameProcess(commandLine, cmdFile);
         });
 
-        if (process != null) KillProcess(process);
+        if (process != null) KillCmdProcess(process);
     }
 
     private static bool IsSameProcess(string commandLine, string batchFilePath) => commandLine.Contains(batchFilePath);
 
-    private static void KillProcess(Process process)
+    private static void KillCmdProcess(Process process)
     {
         AttachConsole((uint) process.Id);
         GenerateConsoleCtrlEvent(CtrlCEvent, 0);

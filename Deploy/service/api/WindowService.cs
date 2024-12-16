@@ -2,5 +2,6 @@
 
 public interface WindowService
 {
-    public void KillProcess(string cmdFile);
+    public void KillProcess(string processName);
+    public void KillCmdProcess(string cmdFile);
 }

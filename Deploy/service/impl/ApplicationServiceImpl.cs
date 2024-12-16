@@ -7,6 +7,7 @@ namespace Deploy.service.impl;
 public class ApplicationServiceImpl : ApplicationService
 {
     private readonly ConfigRepository _configRepository = ServiceProvider.ConfigRepository;
+    private readonly WindowService _windowService = ServiceProvider.WindowService;
 
     public void Start()
     {
@@ -24,5 +25,6 @@ public class ApplicationServiceImpl : ApplicationService
 
     public void Stop()
     {
+        _windowService.KillProcess(_configRepository.GetSystemConfig().ApplicationProcessName);
     }
 }

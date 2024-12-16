@@ -2,8 +2,8 @@
 {
     public class SystemConfig
     {
-        public string? ApplicationName { get; set; }
-        public string? ApplicationLocation { get; set; }
+        public required string ApplicationProcessName { get; set; }
+        public required string ApplicationLocation { get; set; }
         public required string? ApplicationArguments { get; set; }
         public string? ServerName { get; set; }
         public required string ServerWindowName { get; set; }
