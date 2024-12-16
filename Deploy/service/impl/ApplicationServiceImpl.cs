@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.IO;
 using Deploy.repository;
 using Deploy.service.api;
 
@@ -11,11 +12,13 @@ public class ApplicationServiceImpl : ApplicationService
 
     public void Start()
     {
+        var executableFolder = Path.GetDirectoryName(_configRepository.GetSystemConfig().ApplicationLocation);
         var executable = _configRepository.GetSystemConfig().ApplicationLocation;
         var args = _configRepository.GetSystemConfig().ApplicationArguments;
 
         var startInfo = new ProcessStartInfo
         {
+            WorkingDirectory = executableFolder,
             FileName = executable,
             Arguments = args
         };
