@@ -13,6 +13,23 @@ public class DeployServiceImpl : DeployService
 
     public void Deploy(Project project)
     {
+        if (string.IsNullOrEmpty(project.ProjectPath))
+            RestartPlatform(project);
+        else
+            DeployPlatform(project);
+    }
+
+    private void RestartPlatform(Project project)
+    {
+        _applicationService.Stop();
+        _serverService.Stop(project.ServerPath);
+        _serverService.Start(project.ServerPath)
+            .SubscribeOn(Scheduler.Default)
+            .Subscribe(_ => _applicationService.Start());
+    }
+
+    private void DeployPlatform(Project project)
+    {
         _projectService.Build(project.ProjectPath)
             .SubscribeOn(Scheduler.Default)
             .Subscribe(jarPath =>
