@@ -1,4 +1,5 @@
 ﻿using System.Configuration;
+using System.Diagnostics;
 using IniParser;
 using System.IO;
 using Deploy.model;
@@ -27,6 +28,8 @@ public class ConfigRepositoryImpl : ConfigRepository
     }
 
     public SystemConfig GetSystemConfig() => _systemConfig;
+
+    public void OpenConfigurationFile() => Process.Start("explorer.exe", ConfigurationFileName);
 
     private SystemConfig ReadSystemConfig() 
     {

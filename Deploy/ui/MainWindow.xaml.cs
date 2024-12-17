@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System.Diagnostics;
+using System.Windows;
+using Deploy.repository;
 using Deploy.service;
 using Deploy.service.api;
 
@@ -9,7 +11,7 @@ namespace Deploy.ui;
 /// </summary>
 public partial class MainWindow : Window
 {
-    private readonly DeployService _deployService = ServiceProvider.DeployService;
+    private readonly ConfigRepository _configRepository = ServiceProvider.ConfigRepository;
 
     public MainWindow()
     {
@@ -17,13 +19,9 @@ public partial class MainWindow : Window
         DataContext = new ProjectViewModel();
     }
 
-    public void OnOpenProjectLocation(object sender, RoutedEventArgs e)
-    {
-        // TODO
-    }
+    public void OnOpenProjectLocation(object sender, RoutedEventArgs e) => OpenConfigurationFile();
 
-    public void OnOpenPlatformLocation(object sender, RoutedEventArgs e)
-    {
-        // TODO
-    }
+    public void OnOpenPlatformLocation(object sender, RoutedEventArgs e) => OpenConfigurationFile();
+
+    private void OpenConfigurationFile() => _configRepository.OpenConfigurationFile();
 }
