@@ -30,7 +30,10 @@
                                 <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" MinWidth="200" HorizontalAlignment="Left"></TextBox>
                                 <Button Command="{Binding DataContext.ExecuteBuildCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
                                         CommandParameter="{Binding}"
-                                        Content="🛠️ Build 🛠️" Width="330" Margin="3, 0"/>
+                                        Content="🛠️ Build 🛠️" Width="160" Margin="3, 0"/>
+                                <Button Command="{Binding DataContext.ExecuteRestartCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
+                                        CommandParameter="{Binding}"
+                                        Content="🔁 Restart ▶️" Width="164" Margin="3, 0"/>
                             </StackPanel>
 
                             <Label Grid.Row="1" Grid.Column="0" Content="Project:" Style="{StaticResource LabelSmall}"/>

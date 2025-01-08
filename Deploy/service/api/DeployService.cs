@@ -4,5 +4,6 @@ namespace Deploy.service.api;
 
 public interface DeployService
 {
-    public void Deploy(Project project);
+    void Deploy(Project project);
+    void Restart(Project project);
 }

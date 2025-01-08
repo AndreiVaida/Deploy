@@ -14,10 +14,12 @@ public class ProjectViewModel : INotifyPropertyChanged
     private static readonly ConfigRepository ConfigRepository = ServiceProvider.ConfigRepository;
 
     public ICommand ExecuteBuildCommand { get; set; } = new RelayCommand<Project>(ExecuteBuild);
+    public ICommand ExecuteRestartCommand { get; set; } = new RelayCommand<Project>(ExecuteRestart);
 
     public ObservableCollection<Project> Projects { get; set; } = new(ConfigRepository.GetSystemConfig().Projects ?? []);
 
     public static void ExecuteBuild(Project project) => DeployService.Deploy(project);
+    public static void ExecuteRestart(Project project) => DeployService.Restart(project);
 
     public event PropertyChangedEventHandler? PropertyChanged;
     protected void OnPropertyChanged(string propertyName)

@@ -11,15 +11,7 @@ public class DeployServiceImpl : DeployService
     private readonly ServerService _serverService = ServiceProvider.ServerService;
     private readonly ApplicationService _applicationService = ServiceProvider.ApplicationService;
 
-    public void Deploy(Project project)
-    {
-        if (string.IsNullOrEmpty(project.ProjectPath))
-            RestartPlatform(project);
-        else
-            DeployPlatform(project);
-    }
-
-    private void RestartPlatform(Project project)
+    public void Restart(Project project)
     {
         _applicationService.Stop();
         _serverService.Stop(project.ServerPath);
@@ -28,7 +20,7 @@ public class DeployServiceImpl : DeployService
             .Subscribe(_ => _applicationService.Start());
     }
 
-    private void DeployPlatform(Project project)
+    public void Deploy(Project project)
     {
         _projectService.Build(project.ProjectPath)
             .SubscribeOn(Scheduler.Default)

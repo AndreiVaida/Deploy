@@ -4,7 +4,7 @@ Deploy automatically re-deploys the platform with a single click. You save secon
 <br>
 Download the executable: https://drive.google.com/drive/folders/1jRGDC-J8TB_M-BRELUQnkWROjGm3s4oI?usp=sharing
 <br><br>
-![Screenshot](https://github.com/AndreiVaida/Deploy/blob/master/Resources/Screenshot_202024.11.16.png?raw=true "Screenshot")
+![Screenshot](https://github.com/AndreiVaida/Deploy/blob/master/Resources/Screenshot_202025.01.08.png?raw=true "Screenshot")
 
 ## Instructions
 1. Configure your projects and platform in `Configuration.ini`. This file must be available in the root folder of _Deploy.exe_. Configuration example:
