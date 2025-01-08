@@ -17,6 +17,7 @@ application-arguments = username=andrei password=andrei
 server-name = MyServer
 server-window-name = My Server
 server-start-file-relative-location = bin\start_server.bat
+server-start-log = Server successfully started
 
 [projects]
 1 = Project 1,C:\Projects\project1,C:\Projects\Platforms\platform1
@@ -30,6 +31,7 @@ Configuration description:
 - `server-name`: the name of your server which will be displayed on UI (not yet implemented)
 - `server-window-name` (mandatory): the name of the CMD window with your server
 - `server-start-file-relative-location` (mandatory): the relative path to the `.bat` executable of your server, starting from the platform location
+- `server-start-log` (mandatory): the line, logged in server logs, which tells that the server is started and ready for login 
 - projects: enumerate, on each line, your `ProjectName,ProjectLocation,PlatformLocation`
   - `ProjectName`: to easily identify your project UI
   - `ProjectLocation`: path to the project's folder
@@ -37,12 +39,17 @@ Configuration description:
 
 2. Start Deploy.exe. You will see your configured projects. Click on the `🛠️ Build 🛠️` button to rebuild one.
 
-## Deploy steps
+## Features
+### Start/Restart the platform
+When you click the `🔁 Restart ▶️` button, Deploy (re)starts the platform.
+1. Stop the application and the server (if they are open).
+2. Start the server, read its logs in real-time and wait for the starting log.
+3. Start the application.
+
+## Re-deploy the platform
 When you click the `🛠️ Build 🛠️` button, Deploy deploys your project in sequential and parallel steps.
-1. Build your project: run `gradlew assemble --parallel` in `ProjectLocation`.
-2. Stop the application and the service immediately, without waiting for project building.
+1. Build your project with `gradlew assemble --parallel` in `ProjectLocation`.
+2. Stop the application and the server immediately, without waiting for project building.
 3. Copy the generated jar from `ProjectLocation\build\distributions\` to `PlatformLocation\lib\extensions\`. Delete the old jar (send to Recycle Bin).
 4. Start the server, read its logs in real-time and wait for the starting log.
 5. Start the application.
-
-💡 If the ProjectLocation is empty (can be edited on UI) then the project is not built: Deploy only stops and restarts the platform.

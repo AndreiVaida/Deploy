@@ -9,7 +9,6 @@ namespace Deploy.service.impl;
 
 internal class ServerServiceImpl : ServerService
 {
-    private const string ServerStartLog = "Server successfully started as a primary.";
     private const string LogsLocationInServer = "logs";
     private readonly string _jarLocationInServer = Path.Combine("lib", "extensions");
     private const string ServerDateTimeFormat = "yyyy-MM-dd HH:mm:ss";
@@ -56,7 +55,12 @@ internal class ServerServiceImpl : ServerService
     private Predicate<string> GetServerStartLogPredicate()
     {
         var serverStartTimeAsString = DateTime.Now.ToString(ServerDateTimeFormat);
-        return log => log.EndsWith(ServerStartLog) && GetTimeOfLog(log).IsGreaterThan(serverStartTimeAsString);
+        var startLog = _configRepository.GetSystemConfig().ServerStartLog;
+
+        return log =>
+            log.Length > _serverDateTimeCharacters + startLog.Length
+            && GetTimeOfLog(log).IsGreaterThan(serverStartTimeAsString)
+            && log.Contains(startLog);
     }
 
     private string GetTimeOfLog(string log) => log[.._serverDateTimeCharacters];

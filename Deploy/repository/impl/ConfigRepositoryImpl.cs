@@ -18,6 +18,7 @@ public class ConfigRepositoryImpl : ConfigRepository
     private const string ServerNameKey = "server-name";
     private const string ServerWindowNameKey = "server-window-name";
     private const string ServerStartFileRelativeLocationKey = "server-start-file-relative-location";
+    private const string ServerStartLogKey = "server-start-log";
 
     private readonly FileIniDataParser _parser = new();
     private readonly SystemConfig _systemConfig;
@@ -49,6 +50,7 @@ public class ConfigRepositoryImpl : ConfigRepository
             ServerName = applicationSection[ServerNameKey],
             ServerWindowName = applicationSection[ServerWindowNameKey],
             ServerStartFileRelativeLocation = applicationSection[ServerStartFileRelativeLocationKey],
+            ServerStartLog = applicationSection[ServerStartLogKey],
             Projects = GetProjects(projectsSection)
         };
     }
