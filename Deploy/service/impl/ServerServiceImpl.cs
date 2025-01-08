@@ -76,10 +76,17 @@ internal class ServerServiceImpl : ServerService
         }
     }
 
-    private static string GetLatestLogFile(string logsFolder) =>
-        Directory.GetFiles(logsFolder)
+    private static string GetLatestLogFile(string logsFolder)
+    {
+        Thread.Sleep(3000);
+        return GetLogs(logsFolder).First();
+    }
+
+    private static IEnumerable<string> GetLogs(string logsFolder)
+    {
+        return Directory.GetFiles(logsFolder)
             .OrderByDescending(File.GetCreationTime)
             .Where(FileUtils.IsTxt)
-            .Where(FileUtils.IsDateFormat)
-            .First();
+            .Where(FileUtils.IsDateFormat);
+    }
 }
