@@ -18,6 +18,7 @@ server-name = MyServer
 server-window-name = My Server
 server-start-file-relative-location = bin\start_server.bat
 server-start-log = Server successfully started
+project-cache-folder-to-delete = server\build\
 
 [projects]
 1 = Project 1,C:\Projects\project1,C:\Projects\Platforms\platform1
@@ -31,7 +32,8 @@ Configuration description:
 - `server-name`: the name of your server which will be displayed on UI (not yet implemented)
 - `server-window-name` (mandatory): the name of the CMD window with your server
 - `server-start-file-relative-location` (mandatory): the relative path to the `.bat` executable of your server, starting from the platform location
-- `server-start-log` (mandatory): the line, logged in server logs, which tells that the server is started and ready for login 
+- `server-start-log` (mandatory): the line, logged in server logs, which tells that the server is started and ready for login
+- `project-cache-folder-to-delete`: relative path, starting from `ProjectLocation`, of a folder to be deleted before building the project
 - projects: enumerate, on each line, your `ProjectName,ProjectLocation,PlatformLocation`
   - `ProjectName`: to easily identify your project UI
   - `ProjectLocation`: path to the project's folder
@@ -48,8 +50,9 @@ When you click the `🔁 Restart ▶️` button, Deploy (re)starts the platform.
 
 ## Re-deploy the platform
 When you click the `🛠️ Build 🛠️` button, Deploy deploys your project in sequential and parallel steps.
-1. Build your project with `gradlew assemble --parallel` in `ProjectLocation`.
-2. Stop the application and the server immediately, without waiting for project building.
-3. Copy the generated jar from `ProjectLocation\build\distributions\` to `PlatformLocation\lib\extensions\`. Delete the old jar (send to Recycle Bin).
-4. Start the server, read its logs in real-time and wait for the starting log.
-5. Start the application.
+1. Delete the `<ProjectLocation>\<project-cache-folder-to-delete>\ ` folder (move to Recycle Bin) if it's available in Configuration.ini.
+2. Build your project with `gradlew assemble --parallel` in `ProjectLocation`.
+3. Stop the application and the server immediately, without waiting for project building.
+4. Copy the generated jar from `ProjectLocation\build\distributions\` to `PlatformLocation\lib\extensions\`. Delete the old jar (send to Recycle Bin).
+5. Start the server, read its logs in real-time and wait for the starting log.
+6. Start the application.

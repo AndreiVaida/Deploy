@@ -18,6 +18,7 @@ public class ConfigRepositoryImpl : ConfigRepository
     private const string ServerNameKey = "server-name";
     private const string ServerWindowNameKey = "server-window-name";
     private const string ServerStartFileRelativeLocationKey = "server-start-file-relative-location";
+    private const string ProjectCacheFolderToDeleteKey = "project-cache-folder-to-delete";
     private const string ServerStartLogKey = "server-start-log";
 
     private readonly FileIniDataParser _parser = new();
@@ -51,6 +52,7 @@ public class ConfigRepositoryImpl : ConfigRepository
             ServerWindowName = applicationSection[ServerWindowNameKey],
             ServerStartFileRelativeLocation = applicationSection[ServerStartFileRelativeLocationKey],
             ServerStartLog = applicationSection[ServerStartLogKey],
+            ProjectCacheFolderToDelete = applicationSection[ProjectCacheFolderToDeleteKey],
             Projects = GetProjects(projectsSection)
         };
     }

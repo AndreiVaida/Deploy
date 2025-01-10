@@ -9,6 +9,7 @@
         public required string ServerWindowName { get; set; }
         public required string ServerStartFileRelativeLocation { get; set; }
         public required string ServerStartLog { get; set; }
+        public string? ProjectCacheFolderToDelete { get; set; }
         public List<Project>? Projects { get; set; }
     }
 }
