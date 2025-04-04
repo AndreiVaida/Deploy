@@ -35,7 +35,8 @@ public class ProjectServiceImpl : ProjectService
         if (string.IsNullOrEmpty(_configRepository.GetSystemConfig().ProjectCacheFolderToDelete)) return;
 
         var folderToDelete = Path.Combine(projectPath, _configRepository.GetSystemConfig().ProjectCacheFolderToDelete!);
-        FileSystem.DeleteDirectory(folderToDelete, UIOption.OnlyErrorDialogs, RecycleOption.SendToRecycleBin);
+        if (FileSystem.DirectoryExists(folderToDelete))
+            FileSystem.DeleteDirectory(folderToDelete, UIOption.OnlyErrorDialogs, RecycleOption.SendToRecycleBin);
     }
 
     private static void BuildProject(string projectPath) => ExecUtils.RunCommand(projectPath, GradleBuildCommand);

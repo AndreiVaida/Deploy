@@ -76,7 +76,7 @@ internal class ServerServiceImpl : ServerService
             while (streamReader.ReadLine() is { } line)
                 if (condition.Invoke(line))
                     return;
-            Thread.Sleep(500);
+            Thread.Sleep(5000);
         }
     }
 
