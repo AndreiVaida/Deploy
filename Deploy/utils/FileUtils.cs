@@ -18,6 +18,13 @@ public static class FileUtils
         return fileName.Length == DateLength && fileName.All(IsDigit);
     }
 
+    public static bool IsTodayDate(string fileName)
+    {
+        var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(fileName);
+        var todayDateAsString = DateTime.Now.ToString("yyyyMMdd");
+        return fileNameWithoutExtension.Equals(todayDateAsString);
+    }
+
     public static void CopyFile(string destinationFolder, string filePath)
     {
         var fileName = Path.GetFileName(filePath);

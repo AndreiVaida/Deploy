@@ -67,7 +67,7 @@ internal class ServerServiceImpl : ServerService
 
     private static void WaitForLog(string serverPath, Predicate<string> condition)
     {
-        var logFile = GetLatestLogFile(Path.Combine(serverPath, LogsLocationInServer));
+        var logFile = GetTodayLogFile(Path.Combine(serverPath, LogsLocationInServer));
 
         using var fileStream = new FileStream(logFile, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
         using var streamReader = new StreamReader(fileStream);
@@ -76,14 +76,20 @@ internal class ServerServiceImpl : ServerService
             while (streamReader.ReadLine() is { } line)
                 if (condition.Invoke(line))
                     return;
-            Thread.Sleep(5000);
+            Thread.Sleep(3000);
         }
     }
 
-    private static string GetLatestLogFile(string logsFolder)
+    private static string GetTodayLogFile(string logsFolder)
     {
-        Thread.Sleep(3000);
-        return GetLogs(logsFolder).First();
+        do
+        {
+            var logFileName = GetLogs(logsFolder).FirstOrDefault();
+            if (logFileName != null && FileUtils.IsTodayDate(logFileName))
+                return logFileName;
+
+            Thread.Sleep(3000);
+        } while (true);
     }
 
     private static IEnumerable<string> GetLogs(string logsFolder)
