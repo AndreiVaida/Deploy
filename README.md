@@ -29,7 +29,7 @@ Configuration description:
 - `application-process-name` (mandatory): the name of your app from Task Manager
 - `application-location` (mandatory): the path to the executable of your app
 - `application-arguments`: args to start your app
-- `server-name`: the name of your server which will be displayed on UI (not yet implemented)
+- `server-name`: (mandatory) the name of your server which will be displayed on UI (not yet implemented)
 - `server-window-name` (mandatory): the name of the CMD window with your server
 - `server-start-file-relative-location` (mandatory): the relative path to the `.bat` executable of your server, starting from the platform location
 - `server-start-log` (mandatory): the line, logged in server logs, which tells that the server is started and ready for login

@@ -3,5 +3,5 @@
 public interface WindowService
 {
     public void KillProcess(string processName);
-    public void KillCmdProcess(string cmdFile);
+    public void KillCmdProcess(string serverName, string windowName);
 }

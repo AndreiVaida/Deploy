@@ -7,19 +7,18 @@ namespace Deploy.service.impl;
 
 public class WindowServiceImpl : WindowService
 {
-    private const uint CtrlCEvent = 0;
-
-    [DllImport("kernel32.dll", SetLastError = true)]
-    static extern bool AttachConsole(uint dwProcessId);
-
-    [DllImport("kernel32.dll", SetLastError = true)]
-    static extern bool FreeConsole();
-
-    [DllImport("kernel32.dll")]
-    static extern bool GenerateConsoleCtrlEvent(uint dwCtrlEvent, uint dwProcessGroupId);
-
     [DllImport("kernel32.dll", SetLastError = true)]
     static extern bool TerminateProcess(IntPtr hProcess, uint uExitCode);
+
+    [DllImport("user32.dll", SetLastError = true)]
+    static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
+
+    [DllImport("user32.dll", SetLastError = true)]
+    static extern bool PostMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
+
+    private const uint WM_KEYDOWN = 0x0100;
+    private const uint WM_KEYUP = 0x0101;
+    private const int VK_RETURN = 0x0D;
 
     public void KillProcess(string processName)
     {
@@ -28,26 +27,30 @@ public class WindowServiceImpl : WindowService
             TerminateProcess(process.Handle, 0);
     }
 
-    public void KillCmdProcess(string cmdFile)
+    public void KillCmdProcess(string serverName, string windowName)
     {
-        var processes = Process.GetProcessesByName("cmd");
+        var processes = Process.GetProcessesByName("javaw");
         var process = processes.FirstOrDefault(process => {
             var commandLine = GetCommandLine(process.Id);
-            return IsSameProcess(commandLine, cmdFile);
+            return IsSameProcess(commandLine, serverName);
         });
-
-        if (process != null) KillCmdProcess(process);
+        if (process == null) return;
+        
+        process.Kill();
+        process.WaitForExit();
+        CloseCmdWindow(windowName);
     }
 
-    private static bool IsSameProcess(string commandLine, string batchFilePath) => commandLine.Contains(batchFilePath);
+    private static bool IsSameProcess(string commandLine, string batchFilePath) => commandLine.Contains(batchFilePath, StringComparison.CurrentCultureIgnoreCase);
 
-    private static void KillCmdProcess(Process process)
+    private static void CloseCmdWindow(string windowTitle)
     {
-        AttachConsole((uint) process.Id);
-        GenerateConsoleCtrlEvent(CtrlCEvent, 0);
-        FreeConsole();
+        var hWnd = FindWindow(null, windowTitle);
+        if (hWnd == IntPtr.Zero) return;
+
+        PostMessage(hWnd, WM_KEYDOWN, VK_RETURN, IntPtr.Zero);
         Thread.Sleep(500);
-        TerminateProcess(process.Handle, 0);
+        PostMessage(hWnd, WM_KEYUP, VK_RETURN, IntPtr.Zero);
     }
 
     private static string GetCommandLine(int processId)
