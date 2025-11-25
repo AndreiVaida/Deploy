@@ -1,8 +1,7 @@
-﻿using System.Diagnostics;
-using System.Windows;
+﻿using System.Windows;
+using Deploy.logger;
 using Deploy.repository;
 using Deploy.service;
-using Deploy.service.api;
 
 namespace Deploy.ui;
 
@@ -12,11 +11,13 @@ namespace Deploy.ui;
 public partial class MainWindow : Window
 {
     private readonly ConfigRepository _configRepository = ServiceProvider.ConfigRepository;
+    private readonly Logger _logger = new LoggerImpl(nameof(MainWindow));
 
     public MainWindow()
     {
         InitializeComponent();
         DataContext = new ProjectViewModel();
+        _logger.Info("►►► Deploy started ◄◄◄");
     }
 
     public void OnOpenProjectLocation(object sender, RoutedEventArgs e) => OpenConfigurationFile();

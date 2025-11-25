@@ -56,3 +56,6 @@ When you click the `🛠️ Build 🛠️` button, Deploy deploys your project i
 4. Copy the generated jar from `ProjectLocation\build\distributions\` to `PlatformLocation\lib\extensions\`. Delete the old jar (send to Recycle Bin).
 5. Start the server, read its logs in real-time and wait for the starting log.
 6. Start the application.
+
+## Troubleshooting
+See `logs` folder in the root of Deploy.
