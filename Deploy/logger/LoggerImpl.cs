@@ -6,6 +6,7 @@ public class LoggerImpl : Logger
 {
     private readonly string _logFilePath;
     private readonly string _className;
+    private static readonly object FileLock = new();
 
     public LoggerImpl(string className)
     {
@@ -29,7 +30,10 @@ public class LoggerImpl : Logger
         Directory.CreateDirectory(Path.GetDirectoryName(_logFilePath)!);
 
         var logEntry = $"{DateTime.Now:yyyy.MM.dd HH:mm:ss.fff} ({level}) [{_className}] {message}";
-        using var writer = new StreamWriter(_logFilePath, append: true);
-        writer.WriteLine(logEntry);
+        lock (FileLock)
+        {
+            using var writer = new StreamWriter(_logFilePath, append: true);
+            writer.WriteLine(logEntry);
+        }
     }
 }
